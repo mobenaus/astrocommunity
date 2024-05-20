@@ -49,9 +49,14 @@ return {
     },
     opts = function(_, opts)
       local utils = require "astrocore"
+      local path = require "jdtls.path"
       -- use this function notation to build some variables
       local root_markers = { ".git", "mvnw", "gradlew", "pom.xml", "build.gradle", ".project" }
       local root_dir = require("jdtls.setup").find_root(root_markers)
+      local root_parent = vim.fn.fnamemodify(root_dir, ":h")
+      local fs = vim.loop.fs_stat(path.join(root_dir, "pom.xml"))
+      if fs ~= nil then root_dir = root_parent end
+
       -- calculate workspace dir
       local project_name = vim.fn.fnamemodify(vim.fn.getcwd(), ":p:h:t")
       local workspace_dir = vim.fn.stdpath "data" .. "/site/java/workspace-root/" .. project_name
